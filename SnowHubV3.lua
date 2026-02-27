@@ -3,246 +3,178 @@ local PlayerGui = Player:WaitForChild("PlayerGui")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local TweenService = game:GetService("TweenService")
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "SnowyHub"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
-ScreenGui.IgnoreGuiInset = true
-
--- Cores
-local COLORS = {
-    background = Color3.fromRGB(20, 20, 30),
-    surface = Color3.fromRGB(30, 30, 40),
-    primary = Color3.fromRGB(100, 150, 255),
-    secondary = Color3.fromRGB(80, 80, 100),
-    text = Color3.fromRGB(255, 255, 255),
-    success = Color3.fromRGB(100, 200, 100)
-}
 
 -- Botão flutuante
 local FloatingButton = Instance.new("TextButton")
-FloatingButton.Size = UDim2.new(0, 60, 0, 60)
-FloatingButton.Position = UDim2.new(0, 50, 0.5, -30)
-FloatingButton.BackgroundColor3 = COLORS.primary
+FloatingButton.Size = UDim2.new(0, 54, 0, 54)
+FloatingButton.Position = UDim2.new(0, 50, 0.5, -27)
+FloatingButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 FloatingButton.Text = ""
 FloatingButton.Parent = ScreenGui
-FloatingButton.AutoButtonColor = false
 
-local Shadow = Instance.new("ImageLabel")
-Shadow.Size = UDim2.new(1, 10, 1, 10)
-Shadow.Position = UDim2.new(0, -5, 0, -5)
-Shadow.BackgroundTransparency = 1
-Shadow.Image = "rbxassetid://1316045217"
-Shadow.ImageColor3 = Color3.new(0, 0, 0)
-Shadow.ImageTransparency = 0.5
-Shadow.ScaleType = Enum.ScaleType.Slice
-Shadow.SliceCenter = Rect.new(10, 10, 10, 10)
-Shadow.Parent = FloatingButton
+local UICornerBtn = Instance.new("UICorner")
+UICornerBtn.CornerRadius = UDim.new(0, 12)
+UICornerBtn.Parent = FloatingButton
+
+local InnerBtn = Instance.new("Frame")
+InnerBtn.Size = UDim2.new(0, 48, 0, 48)
+InnerBtn.Position = UDim2.new(0.5, -24, 0.5, -24)
+InnerBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+InnerBtn.Parent = FloatingButton
+
+local UICornerInner = Instance.new("UICorner")
+UICornerInner.CornerRadius = UDim.new(0, 10)
+UICornerInner.Parent = InnerBtn
 
 local BtnLabel = Instance.new("TextLabel")
 BtnLabel.Size = UDim2.new(1, 0, 1, 0)
 BtnLabel.BackgroundTransparency = 1
 BtnLabel.Text = "S"
-BtnLabel.TextColor3 = COLORS.text
-BtnLabel.TextSize = 32
-BtnLabel.Font = Enum.Font.GothamBold
-BtnLabel.Parent = FloatingButton
-
-local Glow = Instance.new("ImageLabel")
-Glow.Size = UDim2.new(1.2, 0, 1.2, 0)
-Glow.Position = UDim2.new(-0.1, 0, -0.1, 0)
-Glow.BackgroundTransparency = 1
-Glow.Image = "rbxassetid://3570695787"
-Glow.ImageColor3 = COLORS.primary
-Glow.ImageTransparency = 0.7
-Glow.Parent = FloatingButton
+BtnLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnLabel.TextSize = 24
+BtnLabel.Font = Enum.Font.SourceSansBold
+BtnLabel.Parent = InnerBtn
 
 -- Menu principal
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 600, 0, 550)
-MainFrame.Position = UDim2.new(0.5, -300, 0.5, -275)
-MainFrame.BackgroundColor3 = COLORS.background
+MainFrame.Size = UDim2.new(0, 550, 0, 500)
+MainFrame.Position = UDim2.new(0.5, -275, 0.5, -250)
+MainFrame.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 MainFrame.Visible = false
-MainFrame.ClipsDescendants = true
 MainFrame.Parent = ScreenGui
 
-local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 16)
-MainCorner.Parent = MainFrame
+local UICornerFrame = Instance.new("UICorner")
+UICornerFrame.CornerRadius = UDim.new(0, 12)
+UICornerFrame.Parent = MainFrame
 
--- Top bar
+local InnerFrame = Instance.new("Frame")
+InnerFrame.Size = UDim2.new(1, -6, 1, -6)
+InnerFrame.Position = UDim2.new(0, 3, 0, 3)
+InnerFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+InnerFrame.Parent = MainFrame
+
+local UICornerInnerF = Instance.new("UICorner")
+UICornerInnerF.CornerRadius = UDim.new(0, 10)
+UICornerInnerF.Parent = InnerFrame
+
 local TopBar = Instance.new("Frame")
-TopBar.Size = UDim2.new(1, 0, 0, 60)
-TopBar.BackgroundColor3 = COLORS.surface
-TopBar.Parent = MainFrame
+TopBar.Size = UDim2.new(1, 0, 0, 45)
+TopBar.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+TopBar.Parent = InnerFrame
 
-local TopBarCorner = Instance.new("UICorner")
-TopBarCorner.CornerRadius = UDim.new(0, 16)
-TopBarCorner.Parent = TopBar
-
-local TopGradient = Instance.new("UIGradient")
-TopGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, COLORS.primary),
-    ColorSequenceKeypoint.new(1, COLORS.surface)
-})
-TopGradient.Rotation = 90
-TopGradient.Parent = TopBar
-
-local TitleIcon = Instance.new("TextLabel")
-TitleIcon.Size = UDim2.new(0, 30, 0, 30)
-TitleIcon.Position = UDim2.new(0, 15, 0.5, -15)
-TitleIcon.BackgroundTransparency = 1
-TitleIcon.Text = "S"
-TitleIcon.TextColor3 = COLORS.text
-TitleIcon.Font = Enum.Font.GothamBold
-TitleIcon.TextSize = 24
-TitleIcon.Parent = TopBar
+local TopCorner = Instance.new("UICorner")
+TopCorner.CornerRadius = UDim.new(0, 10)
+TopCorner.Parent = TopBar
 
 local ScriptTitle = Instance.new("TextLabel")
 ScriptTitle.Size = UDim2.new(0, 150, 1, 0)
-ScriptTitle.Position = UDim2.new(0, 55, 0, 0)
-ScriptTitle.Text = "Snowy Hub"
-ScriptTitle.TextColor3 = COLORS.text
-ScriptTitle.Font = Enum.Font.GothamBold
+ScriptTitle.Position = UDim2.new(0, 10, 0, 0)
+ScriptTitle.Text = "Snowy Hub V3"
+ScriptTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+ScriptTitle.Font = Enum.Font.SourceSansBold
 ScriptTitle.TextSize = 22
 ScriptTitle.TextXAlignment = Enum.TextXAlignment.Left
 ScriptTitle.BackgroundTransparency = 1
 ScriptTitle.Parent = TopBar
 
 local CloseBtn = Instance.new("TextButton")
-CloseBtn.Size = UDim2.new(0, 40, 0, 40)
-CloseBtn.Position = UDim2.new(1, -50, 0.5, -20)
-CloseBtn.BackgroundColor3 = COLORS.secondary
+CloseBtn.Size = UDim2.new(0, 32, 0, 32)
+CloseBtn.Position = UDim2.new(1, -42, 0.5, -16)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 CloseBtn.Text = "X"
-CloseBtn.TextColor3 = COLORS.text
-CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.Font = Enum.Font.SourceSansBold
 CloseBtn.TextSize = 18
 CloseBtn.Parent = TopBar
 
-local CloseCorner = Instance.new("UICorner")
-CloseCorner.CornerRadius = UDim.new(1, 0)
-CloseCorner.Parent = CloseBtn
+local UICornerClose = Instance.new("UICorner")
+UICornerClose.CornerRadius = UDim.new(0, 8)
+UICornerClose.Parent = CloseBtn
 
--- Sidebar
 local SideBar = Instance.new("Frame")
-SideBar.Size = UDim2.new(0, 160, 1, -60)
-SideBar.Position = UDim2.new(0, 0, 0, 60)
-SideBar.BackgroundColor3 = COLORS.surface
-SideBar.Parent = MainFrame
+SideBar.Size = UDim2.new(0, 140, 1, -45)
+SideBar.Position = UDim2.new(0, 0, 0, 45)
+SideBar.BackgroundTransparency = 1
+SideBar.Parent = InnerFrame
 
-local SidebarCorner = Instance.new("UICorner")
-SidebarCorner.CornerRadius = UDim.new(0, 16)
-SidebarCorner.Parent = SideBar
-
--- Main content
 local MainContent = Instance.new("ScrollingFrame")
-MainContent.Size = UDim2.new(1, -170, 1, -70)
-MainContent.Position = UDim2.new(0, 165, 0, 65)
+MainContent.Size = UDim2.new(1, -145, 1, -55)
+MainContent.Position = UDim2.new(0, 145, 0, 50)
 MainContent.BackgroundTransparency = 1
-MainContent.ScrollBarThickness = 4
+MainContent.ScrollBarThickness = 8
 MainContent.CanvasSize = UDim2.new(0, 0, 0, 900)
-MainContent.ScrollBarImageColor3 = COLORS.primary
+MainContent.ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255)
 MainContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
-MainContent.Parent = MainFrame
+MainContent.Parent = InnerFrame
 
 -- Função para criar botões de aba
 local function createTabBtn(name, posIdx)
     local Btn = Instance.new("TextButton")
-    Btn.Size = UDim2.new(0.9, 0, 0, 50)
-    Btn.Position = UDim2.new(0.05, 0, 0, 80 + (posIdx * 60))
-    Btn.BackgroundColor3 = COLORS.primary
-    Btn.BackgroundTransparency = 0.8
+    Btn.Size = UDim2.new(0.85, 0, 0, 40)
+    Btn.Position = UDim2.new(0.075, 0, 0, 20 + (posIdx * 50))
+    Btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
     Btn.Text = name
-    Btn.TextColor3 = COLORS.text
-    Btn.Font = Enum.Font.Gotham
-    Btn.TextSize = 16
+    Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Btn.Font = Enum.Font.SourceSansBold
+    Btn.TextSize = 18
     Btn.Parent = SideBar
-    Btn.AutoButtonColor = false
-
-    local BtnCorner = Instance.new("UICorner")
-    BtnCorner.CornerRadius = UDim.new(0, 12)
-    BtnCorner.Parent = Btn
-
-    Btn.MouseEnter:Connect(function()
-        TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.4}):Play()
-    end)
-
-    Btn.MouseLeave:Connect(function()
-        TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.8}):Play()
-    end)
-
+    Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 8)
     return Btn
 end
 
-local TabMain = createTabBtn("MAIN", 0)
-local TabFarm = createTabBtn("FARM", 1)
-local TabBuy = createTabBtn("BUY", 2)
-local TabSpeed = createTabBtn("SPEED", 3)
+local TabMain = createTabBtn("Main", 0)
+local TabFarm = createTabBtn("Farm", 1)
+local TabBuy = createTabBtn("Buy", 2)
+local TabSpeed = createTabBtn("Speed", 3)
 
-local options = {MAIN = {}, FARM = {}, BUY = {}, SPEED = {}}
+local options = {Main = {}, Farm = {}, Buy = {}, Speed = {}}
 
--- Função para criar opções
+-- Função para criar opções toggle
 local function createOption(name, posIdx, startActive, tab, callback)
     local Container = Instance.new("Frame")
-    Container.Size = UDim2.new(0.95, 0, 0, 60)
-    Container.Position = UDim2.new(0.025, 0, 0, posIdx * 70)
-    Container.BackgroundColor3 = COLORS.surface
-    Container.Visible = (tab == "MAIN")
+    Container.Size = UDim2.new(0.95, 0, 0, 50)
+    Container.Position = UDim2.new(0, 0, 0, posIdx * 60)
+    Container.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    Container.Visible = (tab == "Main")
     Container.Parent = MainContent
-
-    local ContainerCorner = Instance.new("UICorner")
-    ContainerCorner.CornerRadius = UDim.new(0, 12)
-    ContainerCorner.Parent = Container
+    Instance.new("UICorner", Container).CornerRadius = UDim.new(0, 10)
 
     local Label = Instance.new("TextLabel")
     Label.Size = UDim2.new(0.6, 0, 1, 0)
     Label.Position = UDim2.new(0.05, 0, 0, 0)
     Label.Text = name
-    Label.TextColor3 = COLORS.text
-    Label.Font = Enum.Font.Gotham
-    Label.TextSize = 16
-    Label.TextXAlignment = Enum.TextXAlignment.Left
+    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
     Label.BackgroundTransparency = 1
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+    Label.Font = Enum.Font.SourceSans
+    Label.TextSize = 16
     Label.Parent = Container
 
-    local SwitchBG = Instance.new("Frame")
-    SwitchBG.Size = UDim2.new(0, 50, 0, 26)
-    SwitchBG.Position = UDim2.new(1, -65, 0.5, -13)
-    SwitchBG.BackgroundColor3 = startActive and COLORS.success or COLORS.secondary
+    local SwitchBG = Instance.new("TextButton")
+    SwitchBG.Size = UDim2.new(0, 45, 0, 24)
+    SwitchBG.Position = UDim2.new(1, -55, 0.5, -12)
+    SwitchBG.BackgroundColor3 = startActive and Color3.fromRGB(150, 150, 150) or Color3.fromRGB(40, 40, 40)
+    SwitchBG.Text = ""
     SwitchBG.Parent = Container
+    Instance.new("UICorner", SwitchBG).CornerRadius = UDim.new(1, 0)
 
-    local SwitchCorner = Instance.new("UICorner")
-    SwitchCorner.CornerRadius = UDim.new(1, 0)
-    SwitchCorner.Parent = SwitchBG
-
-    local SwitchButton = Instance.new("TextButton")
-    SwitchButton.Size = UDim2.new(1, 0, 1, 0)
-    SwitchButton.BackgroundTransparency = 1
-    SwitchButton.Text = ""
-    SwitchButton.Parent = SwitchBG
-
-    local SwitchCircle = Instance.new("Frame")
-    SwitchCircle.Size = UDim2.new(0, 22, 0, 22)
-    SwitchCircle.Position = startActive and UDim2.new(1, -26, 0.5, -11) or UDim2.new(0, 4, 0.5, -11)
-    SwitchCircle.BackgroundColor3 = COLORS.text
-    SwitchCircle.Parent = SwitchBG
-
-    local CircleCorner = Instance.new("UICorner")
-    CircleCorner.CornerRadius = UDim.new(1, 0)
-    CircleCorner.Parent = SwitchCircle
+    local Circle = Instance.new("Frame")
+    Circle.Size = UDim2.new(0, 18, 0, 18)
+    Circle.Position = startActive and UDim2.new(1, -21, 0.5, -9) or UDim2.new(0, 3, 0.5, -9)
+    Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Circle.Parent = SwitchBG
+    Instance.new("UICorner", Circle).CornerRadius = UDim.new(1, 0)
 
     local active = startActive
-
-    SwitchButton.MouseButton1Click:Connect(function()
+    SwitchBG.MouseButton1Click:Connect(function()
         active = not active
-        TweenService:Create(SwitchBG, TweenInfo.new(0.2), {
-            BackgroundColor3 = active and COLORS.success or COLORS.secondary
-        }):Play()
-        TweenService:Create(SwitchCircle, TweenInfo.new(0.2), {
-            Position = active and UDim2.new(1, -26, 0.5, -11) or UDim2.new(0, 4, 0.5, -11)
-        }):Play()
+        Circle:TweenPosition(active and UDim2.new(1, -21, 0.5, -9) or UDim2.new(0, 3, 0.5, -9), "Out", "Quad", 0.2, true)
+        SwitchBG.BackgroundColor3 = active and Color3.fromRGB(150, 150, 150) or Color3.fromRGB(40, 40, 40)
         if callback then callback(active) end
     end)
 
@@ -250,84 +182,64 @@ local function createOption(name, posIdx, startActive, tab, callback)
     return function() return active end
 end
 
--- Slider
-local function createSlider(name, posIdx, tab, min, max, default)
+-- Função pra criar slider de velocidade
+local function createSpeedSlider(name, posIdx, tab)
     local Container = Instance.new("Frame")
-    Container.Size = UDim2.new(0.95, 0, 0, 80)
-    Container.Position = UDim2.new(0.025, 0, 0, posIdx * 90)
-    Container.BackgroundColor3 = COLORS.surface
+    Container.Size = UDim2.new(0.95, 0, 0, 70)
+    Container.Position = UDim2.new(0, 0, 0, posIdx * 80)
+    Container.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
     Container.Visible = false
     Container.Parent = MainContent
-
-    local ContainerCorner = Instance.new("UICorner")
-    ContainerCorner.CornerRadius = UDim.new(0, 12)
-    ContainerCorner.Parent = Container
+    Instance.new("UICorner", Container).CornerRadius = UDim.new(0, 10)
 
     local Label = Instance.new("TextLabel")
     Label.Size = UDim2.new(1, -20, 0, 30)
-    Label.Position = UDim2.new(0, 15, 0, 10)
+    Label.Position = UDim2.new(0, 10, 0, 5)
     Label.Text = name
-    Label.TextColor3 = COLORS.text
-    Label.Font = Enum.Font.Gotham
-    Label.TextSize = 16
-    Label.TextXAlignment = Enum.TextXAlignment.Left
+    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
     Label.BackgroundTransparency = 1
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+    Label.Font = Enum.Font.SourceSansBold
+    Label.TextSize = 18
     Label.Parent = Container
 
     local SliderBg = Instance.new("Frame")
-    SliderBg.Size = UDim2.new(0.8, -20, 0, 4)
-    SliderBg.Position = UDim2.new(0.1, 0, 0, 55)
-    SliderBg.BackgroundColor3 = COLORS.secondary
+    SliderBg.Size = UDim2.new(0.9, 0, 0, 20)
+    SliderBg.Position = UDim2.new(0.05, 0, 0, 40)
+    SliderBg.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     SliderBg.Parent = Container
-
-    local SliderBgCorner = Instance.new("UICorner")
-    SliderBgCorner.CornerRadius = UDim.new(1, 0)
-    SliderBgCorner.Parent = SliderBg
+    Instance.new("UICorner", SliderBg).CornerRadius = UDim.new(1, 0)
 
     local SliderFill = Instance.new("Frame")
-    SliderFill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
-    SliderFill.BackgroundColor3 = COLORS.primary
+    SliderFill.Size = UDim2.new(0.5, 0, 1, 0)
+    SliderFill.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
     SliderFill.Parent = SliderBg
-
-    local SliderFillCorner = Instance.new("UICorner")
-    SliderFillCorner.CornerRadius = UDim.new(1, 0)
-    SliderFillCorner.Parent = SliderFill
-
-    local SliderButton = Instance.new("TextButton")
-    SliderButton.Size = UDim2.new(0, 18, 0, 18)
-    SliderButton.Position = UDim2.new(SliderFill.Size.X.Scale, -9, 0.5, -9)
-    SliderButton.BackgroundColor3 = COLORS.primary
-    SliderButton.Text = ""
-    SliderButton.Parent = Container
-
-    local SliderButtonCorner = Instance.new("UICorner")
-    SliderButtonCorner.CornerRadius = UDim.new(1, 0)
-    SliderButtonCorner.Parent = SliderButton
+    Instance.new("UICorner", SliderFill).CornerRadius = UDim.new(1, 0)
 
     local ValueLabel = Instance.new("TextLabel")
-    ValueLabel.Size = UDim2.new(0, 40, 0, 20)
-    ValueLabel.Position = UDim2.new(0.9, -20, 0, 50)
-    ValueLabel.Text = tostring(default)
-    ValueLabel.TextColor3 = COLORS.primary
-    ValueLabel.Font = Enum.Font.GothamBold
-    ValueLabel.TextSize = 14
+    ValueLabel.Size = UDim2.new(0, 50, 0, 20)
+    ValueLabel.Position = UDim2.new(1, -60, 0, 40)
+    ValueLabel.Text = "16"
+    ValueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     ValueLabel.BackgroundTransparency = 1
+    ValueLabel.Font = Enum.Font.SourceSansBold
+    ValueLabel.TextSize = 16
     ValueLabel.Parent = Container
 
-    local value = default
+    local speed = 16
     local dragging = false
 
     local function updateSlider(input)
-        local posX = math.clamp((input.Position.X - SliderBg.AbsolutePosition.X) / SliderBg.AbsoluteSize.X, 0, 1)
-        SliderFill.Size = UDim2.new(posX, 0, 1, 0)
-        SliderButton.Position = UDim2.new(posX, -9, 0.5, -9)
-        value = math.floor(min + (posX * (max - min)))
-        ValueLabel.Text = tostring(value)
+        local pos = UDim2.new(math.clamp((input.Position.X - SliderBg.AbsolutePosition.X) / SliderBg.AbsoluteSize.X, 0, 1), 0, 0.5, 0)
+        SliderFill.Size = UDim2.new(pos.X.Scale, 0, 1, 0)
+        speed = math.floor(16 + (pos.X.Scale * 84))
+        ValueLabel.Text = tostring(speed)
     end
 
-    SliderButton.InputBegan:Connect(function(input)
+    SliderBg.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
+            updateSlider(input)
         end
     end)
 
@@ -344,50 +256,55 @@ local function createSlider(name, posIdx, tab, min, max, default)
     end)
 
     table.insert(options[tab], Container)
-    return function() return value end
+    return function() return speed end
 end
 
--- Opções
-local isGodRagdoll = createOption("Anti Ragdoll", 0, true, "MAIN")
-local isInstantCollect = createOption("Instant Collect", 1, true, "MAIN")
-local isLowMode = createOption("Low Mode", 2, false, "MAIN")
-local isAutoBuyBrainrot = createOption("Auto Buy Brainrot", 3, false, "MAIN")
+-- === Opções da Main ===
+local isGodRagdoll = createOption("Anti Ragdoll", 0, true, "Main")
+local isInstantCollect = createOption("Instant Collect (sem segurar)", 1, true, "Main")
+local isLowMode = createOption("Low Mode (mais FPS)", 2, false, "Main")
+local isAutoBuyBrainrot = createOption("Auto Buy Brainrots (não perder)", 3, false, "Main")
 
-local isAutoCommon = createOption("Common", 0, false, "FARM")
-local isAutoUncommon = createOption("Uncommon", 1, false, "FARM")
-local isAutoRare = createOption("Rare", 2, false, "FARM")
-local isAutoEpic = createOption("Epic", 3, false, "FARM")
-local isAutoLegendary = createOption("Legendary", 4, false, "FARM")
-local isAutoMythic = createOption("Mythic", 5, false, "FARM")
-local isAutoSecret = createOption("Secret", 6, false, "FARM")
-local isAutoStellar = createOption("Stellar", 7, false, "FARM")
+-- === Opções do Farm (TODAS as raridades) ===
+local isAutoCommon = createOption("Auto Common", 0, false, "Farm")
+local isAutoUncommon = createOption("Auto Uncommon", 1, false, "Farm")
+local isAutoRare = createOption("Auto Rare", 2, false, "Farm")
+local isAutoEpic = createOption("Auto Epic", 3, false, "Farm")
+local isAutoLegendary = createOption("Auto Legendary", 4, false, "Farm")
+local isAutoMythic = createOption("Auto Mythic", 5, false, "Farm")
+local isAutoSecret = createOption("Auto Secret", 6, false, "Farm")
+local isAutoStellar = createOption("Auto Stellar", 7, false, "Farm")
 
-local buyIce = createOption("Ice Emblem", 0, false, "BUY")
-local buyVic = createOption("Victrola", 1, false, "BUY")
-local buyStar = createOption("Star", 2, false, "BUY")
-local buyFlow = createOption("Flower", 3, false, "BUY")
-local buyPhon = createOption("Phone", 4, false, "BUY")
+-- === Opções de Compra ===
+local buyIce = createOption("Auto Ice Emblem", 0, false, "Buy")
+local buyVic = createOption("Auto Victrola", 1, false, "Buy")
+local buyStar = createOption("Auto Star", 2, false, "Buy")
+local buyFlow = createOption("Auto Flower", 3, false, "Buy")
+local buyPhon = createOption("Auto Phone", 4, false, "Buy")
 
-local getSpeed = createSlider("WalkSpeed", 0, "SPEED", 16, 100, 16)
+-- Slider de velocidade
+local getSpeed = createSpeedSlider("Velocidade do Player", 0, "Speed")
+
+-- Materiais para Low Mode
+local originalMaterials = {}
 
 -- Função pra trocar abas
 local function showTab(tabName)
-    for tab, containers in pairs(options) do
-        for _, container in ipairs(containers) do
-            container.Visible = (tab == tabName)
-        end
-    end
+    for _, v in pairs(options.Main) do v.Visible = (tabName == "Main") end
+    for _, v in pairs(options.Farm) do v.Visible = (tabName == "Farm") end
+    for _, v in pairs(options.Buy) do v.Visible = (tabName == "Buy") end
+    for _, v in pairs(options.Speed) do v.Visible = (tabName == "Speed") end
 end
 
-TabMain.MouseButton1Click:Connect(function() showTab("MAIN") end)
-TabFarm.MouseButton1Click:Connect(function() showTab("FARM") end)
-TabBuy.MouseButton1Click:Connect(function() showTab("BUY") end)
-TabSpeed.MouseButton1Click:Connect(function() showTab("SPEED") end)
+TabMain.MouseButton1Click:Connect(function() showTab("Main") end)
+TabFarm.MouseButton1Click:Connect(function() showTab("Farm") end)
+TabBuy.MouseButton1Click:Connect(function() showTab("Buy") end)
+TabSpeed.MouseButton1Click:Connect(function() showTab("Speed") end)
 
--- Dragging
+-- Dragging do botão
 local dragging, dragStart, startPos
 FloatingButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         dragging = true
         dragStart = input.Position
         startPos = FloatingButton.Position
@@ -395,7 +312,7 @@ FloatingButton.InputBegan:Connect(function(input)
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
         local delta = input.Position - dragStart
         FloatingButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
@@ -403,25 +320,285 @@ end)
 
 UserInputService.InputEnded:Connect(function() dragging = false end)
 
--- Controles
-local function toggleMenu()
-    MainFrame.Visible = not MainFrame.Visible
-end
-
-FloatingButton.MouseButton1Click:Connect(toggleMenu)
+-- Fechar com botão X
 CloseBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false end)
 
-UserInputService.InputBegan:Connect(function(input, gp)
-    if not gp and input.KeyCode == Enum.KeyCode.L then
-        toggleMenu()
+-- Abrir/Fechar com tecla L
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and input.KeyCode == Enum.KeyCode.L then
+        MainFrame.Visible = not MainFrame.Visible
     end
 end)
 
--- Animação do botão
-local pulseTween = TweenService:Create(Glow, TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1), {
-    ImageTransparency = 0.5
-})
-pulseTween:Play()
+-- Botão flutuante também abre
+FloatingButton.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
 
--- Funções do jogo (mantidas iguais)
--- [Cole aqui todas as funções: Anti Ragdoll, Instant Collect, Low Mode, etc]
+-- === FUNÇÕES ===
+
+-- 1. ANTI RAGDOLL
+RunService.Heartbeat:Connect(function()
+    if isGodRagdoll() then
+        local char = Player.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            local root = char.HumanoidRootPart
+            if root:FindFirstChild("RagdollWeld") then root.RagdollWeld:Destroy() end
+            for _, v in pairs(char:GetDescendants()) do
+                if v:IsA("Motor6D") then v.Enabled = true end
+                if v:IsA("BallSocketConstraint") or v:IsA("NoCollisionConstraint") then v:Destroy() end
+            end
+        end
+    end
+end)
+
+-- 2. INSTANT COLLECT (ProximityPrompt sem segurar)
+task.spawn(function()
+    while task.wait(1) do
+        if isInstantCollect() then
+            pcall(function()
+                for _, obj in pairs(workspace:GetDescendants()) do
+                    if obj:IsA("ProximityPrompt") then
+                        obj.HoldDuration = 0
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+-- 3. LOW MODE
+task.spawn(function()
+    while task.wait(0.5) do
+        if isLowMode() then
+            pcall(function()
+                for _, v in pairs(workspace:GetDescendants()) do
+                    if v:IsA("BasePart") and (v.Name == "Part" or v.Name == "Floor") then
+                        originalMaterials[v] = v.Material
+                        v.Material = Enum.Material.Air
+                    end
+                end
+            end)
+        else
+            for part, mat in pairs(originalMaterials) do
+                pcall(function()
+                    if part and part.Parent then
+                        part.Material = mat
+                    end
+                end)
+            end
+            originalMaterials = {}
+        end
+    end
+end)
+
+-- 4. AUTO BUY BRAINROTS (não perder para outros)
+task.spawn(function()
+    local blackListNames = {["SellPrompt"] = true, ["GrabPrompt"] = true, ["PlacePrompt"] = true, ["AddPrompt"] = true}
+    while task.wait(0.1) do
+        if isAutoBuyBrainrot() then
+            pcall(function()
+                local char = Player.Character
+                if char and char:FindFirstChild("HumanoidRootPart") then
+                    local root = char.HumanoidRootPart
+                    for _, prompt in pairs(workspace:GetDescendants()) do
+                        if prompt:IsA("ProximityPrompt") and prompt.Enabled then
+                            if not blackListNames[prompt.Name] then
+                                local part = prompt.Parent
+                                local model = part and part:FindFirstAncestorOfClass("Model")
+                                local isMerchant = model and (model.Name == "IngredientsMerchant" or model.Name == "RobuxMerchant")
+                                if part and part:IsA("BasePart") and not isMerchant then
+                                    local distance = (root.Position - part.Position).Magnitude
+                                    if distance <= prompt.MaxActivationDistance then 
+                                        fireproximityprompt(prompt) 
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+-- 5. VELOCIDADE
+RunService.Heartbeat:Connect(function()
+    local char = Player.Character
+    if char then
+        local humanoid = char:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = getSpeed()
+        end
+    end
+end)
+
+-- 6. AUTO FARM (Todas as raridades) com COMPRA AUTOMÁTICA
+local brainrotsFolder = workspace:WaitForChild("Client", 10):WaitForChild("Path", 5):WaitForChild("Brainrots", 5)
+local targetHead = nil
+local isHidden = false
+
+-- Lista completa de raridades
+local rarityNames = {
+    common = {"common"},
+    uncommon = {"uncommon"},
+    rare = {"rare"},
+    epic = {"epic"},
+    legendary = {"legendary"},
+    mythic = {"mythic", "Gorillo Watermelondrillo", "Frigo Camelo", "Girafa Celestre", "Ganganzelli Trulala", "Tigroligre Frutonni"},
+    secret = {"secret", "La Vacca Saturno Saturnita", "Esok Sekolah", "Tralaledon", "Garama and Madundung"},
+    stellar = {"stellar", "Meowl", "Capitano Clash Warnini", "Strawberry Elephant"}
+}
+
+local function setVisibility(visible)
+    local char = Player.Character
+    if not char then return end
+    local transparency = visible and 0 or 1
+    for _, v in pairs(char:GetDescendants()) do
+        if v:IsA("BasePart") or v:IsA("Decal") then
+            if v.Name ~= "HumanoidRootPart" then v.Transparency = transparency end
+        elseif v:IsA("BillboardGui") or v:IsA("SurfaceGui") then
+            v.Enabled = visible
+        end
+    end
+    isHidden = not visible
+end
+
+-- Função para comprar o pet automaticamente (spamar E)
+local function autoBuyPet()
+    local char = Player.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return false end
+    
+    -- Procura por ProximityPrompt perto do player
+    for _, prompt in pairs(workspace:GetDescendants()) do
+        if prompt:IsA("ProximityPrompt") and prompt.Enabled then
+            local part = prompt.Parent
+            if part and part:IsA("BasePart") then
+                local distance = (char.HumanoidRootPart.Position - part.Position).Magnitude
+                -- Se estiver perto do prompt (distância de ativação)
+                if distance <= prompt.MaxActivationDistance then
+                    -- Ativa o prompt (compra o pet)
+                    fireproximityprompt(prompt)
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+
+-- Spam de compra mais rápido (10x por segundo)
+task.spawn(function()
+    while task.wait(0.1) do
+        if targetHead then -- Se tem um alvo
+            pcall(autoBuyPet)
+        end
+    end
+end)
+
+RunService.Heartbeat:Connect(function()
+    -- Verifica quais raridades estão ativas
+    local activeRarities = {}
+    if isAutoCommon() then table.insert(activeRarities, "common") end
+    if isAutoUncommon() then table.insert(activeRarities, "uncommon") end
+    if isAutoRare() then table.insert(activeRarities, "rare") end
+    if isAutoEpic() then table.insert(activeRarities, "epic") end
+    if isAutoLegendary() then table.insert(activeRarities, "legendary") end
+    if isAutoMythic() then table.insert(activeRarities, "mythic") end
+    if isAutoSecret() then table.insert(activeRarities, "secret") end
+    if isAutoStellar() then table.insert(activeRarities, "stellar") end
+
+    if #activeRarities == 0 then 
+        targetHead = nil 
+        if isHidden then setVisibility(true) end
+        return 
+    end
+
+    local char = Player.Character
+    local root = char and char:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+
+    -- Se já tem um alvo e ele ainda existe
+    if targetHead and targetHead.Parent and targetHead.Parent.Parent == brainrotsFolder then
+        -- Fica perto do pet para comprar
+        root.CFrame = targetHead.CFrame * CFrame.new(0, 0, -3)
+        
+        if not isHidden then setVisibility(false) end
+        
+        -- Tenta comprar a cada frame também
+        pcall(autoBuyPet)
+        
+        return
+    end
+
+    -- Procura novo alvo
+    targetHead = nil
+    if isHidden then setVisibility(true) end
+
+    for _, model in pairs(brainrotsFolder:GetChildren()) do
+        if model:IsA("Model") then
+            local ui = model:FindFirstChild("Brainrot_UI")
+            local frame = ui and ui:FindFirstChild("Frame")
+            local rarityLbl = frame and frame:FindFirstChild("Rarity")
+            local titleLbl = frame and frame:FindFirstChild("Title")
+            local head = model:FindFirstChild("Head")
+
+            if head and frame then
+                local rarityText = rarityLbl and string.lower(rarityLbl.Text) or ""
+                local titleText = titleLbl and titleLbl.Text or ""
+                
+                for _, rarity in ipairs(activeRarities) do
+                    local isTarget = false
+                    local names = rarityNames[rarity]
+                    
+                    for _, name in ipairs(names) do
+                        if rarityText:find(name) or titleText == name then
+                            isTarget = true
+                            break
+                        end
+                    end
+                    
+                    if isTarget then
+                        targetHead = head
+                        root.CFrame = head.CFrame * CFrame.new(0, 0, -3) -- Teleporta e já posiciona para comprar
+                        break
+                    end
+                end
+                
+                if targetHead then break end
+            end
+        end
+    end
+end)
+
+-- 7. AUTO COMPRAR INGREDIENTES
+local function isAnyBuyActive()
+    return buyIce() or buyVic() or buyStar() or buyFlow() or buyPhon()
+end
+
+local buyList = {
+    {get = buyIce, name = "IceEmblem"},
+    {get = buyVic, name = "Victrola"},
+    {get = buyStar, name = "Star"},
+    {get = buyFlow, name = "Flower"},
+    {get = buyPhon, name = "Phone"}
+}
+
+task.spawn(function()
+    local Bridge = ReplicatedStorage:WaitForChild("Remotes", 5):WaitForChild("Bridge")
+    while task.wait(1) do
+        if isAnyBuyActive() then
+            pcall(function()
+                for _, item in ipairs(buyList) do
+                    if item.get() then
+                        Bridge:FireServer("General", "Buy", item.name)
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+print("✅ Snowy Hub V3 carregado!")
+print("📌 Pressione L para abrir/fechar")
+print("📌 Abas: Main | Farm | Buy | Speed")
+print("📌 Main: Anti Ragdoll, Instant Collect, Low Mode, Auto Buy Brainrot")
+print("📌 Farm: Common até Stellar (8 raridades) - com COMPRA AUTOMÁTICA")
