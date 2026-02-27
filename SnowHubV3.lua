@@ -3,178 +3,222 @@ local PlayerGui = Player:WaitForChild("PlayerGui")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "SnowyHub"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
+ScreenGui.IgnoreGuiInset = true
+
+-- Cores
+local COLORS = {
+    background = Color3.fromRGB(20, 20, 30),
+    surface = Color3.fromRGB(30, 30, 40),
+    primary = Color3.fromRGB(100, 150, 255),
+    secondary = Color3.fromRGB(80, 80, 100),
+    text = Color3.fromRGB(255, 255, 255),
+    success = Color3.fromRGB(100, 200, 100)
+}
 
 -- Botão flutuante
 local FloatingButton = Instance.new("TextButton")
-FloatingButton.Size = UDim2.new(0, 54, 0, 54)
-FloatingButton.Position = UDim2.new(0, 50, 0.5, -27)
-FloatingButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+FloatingButton.Size = UDim2.new(0, 60, 0, 60)
+FloatingButton.Position = UDim2.new(0, 50, 0.5, -30)
+FloatingButton.BackgroundColor3 = COLORS.primary
 FloatingButton.Text = ""
 FloatingButton.Parent = ScreenGui
-
-local UICornerBtn = Instance.new("UICorner")
-UICornerBtn.CornerRadius = UDim.new(0, 12)
-UICornerBtn.Parent = FloatingButton
-
-local InnerBtn = Instance.new("Frame")
-InnerBtn.Size = UDim2.new(0, 48, 0, 48)
-InnerBtn.Position = UDim2.new(0.5, -24, 0.5, -24)
-InnerBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-InnerBtn.Parent = FloatingButton
-
-local UICornerInner = Instance.new("UICorner")
-UICornerInner.CornerRadius = UDim.new(0, 10)
-UICornerInner.Parent = InnerBtn
+FloatingButton.AutoButtonColor = false
 
 local BtnLabel = Instance.new("TextLabel")
 BtnLabel.Size = UDim2.new(1, 0, 1, 0)
 BtnLabel.BackgroundTransparency = 1
 BtnLabel.Text = "S"
-BtnLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-BtnLabel.TextSize = 24
-BtnLabel.Font = Enum.Font.SourceSansBold
-BtnLabel.Parent = InnerBtn
+BtnLabel.TextColor3 = COLORS.text
+BtnLabel.TextSize = 32
+BtnLabel.Font = Enum.Font.GothamBold
+BtnLabel.Parent = FloatingButton
 
 -- Menu principal
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 550, 0, 500)
-MainFrame.Position = UDim2.new(0.5, -275, 0.5, -250)
-MainFrame.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+MainFrame.Size = UDim2.new(0, 500, 0, 400) -- Tamanho fixo
+MainFrame.Position = UDim2.new(0.5, -250, 0.5, -200)
+MainFrame.BackgroundColor3 = COLORS.background
 MainFrame.Visible = false
 MainFrame.Parent = ScreenGui
+MainFrame.Active = true
+MainFrame.Draggable = false
 
-local UICornerFrame = Instance.new("UICorner")
-UICornerFrame.CornerRadius = UDim.new(0, 12)
-UICornerFrame.Parent = MainFrame
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = MainFrame
 
-local InnerFrame = Instance.new("Frame")
-InnerFrame.Size = UDim2.new(1, -6, 1, -6)
-InnerFrame.Position = UDim2.new(0, 3, 0, 3)
-InnerFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-InnerFrame.Parent = MainFrame
-
-local UICornerInnerF = Instance.new("UICorner")
-UICornerInnerF.CornerRadius = UDim.new(0, 10)
-UICornerInnerF.Parent = InnerFrame
-
+-- Top bar (arrastável)
 local TopBar = Instance.new("Frame")
-TopBar.Size = UDim2.new(1, 0, 0, 45)
-TopBar.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-TopBar.Parent = InnerFrame
+TopBar.Size = UDim2.new(1, 0, 0, 40)
+TopBar.BackgroundColor3 = COLORS.surface
+TopBar.Parent = MainFrame
+TopBar.Active = true
 
-local TopCorner = Instance.new("UICorner")
-TopCorner.CornerRadius = UDim.new(0, 10)
-TopCorner.Parent = TopBar
+local TopBarCorner = Instance.new("UICorner")
+TopBarCorner.CornerRadius = UDim.new(0, 12)
+TopBarCorner.Parent = TopBar
 
-local ScriptTitle = Instance.new("TextLabel")
-ScriptTitle.Size = UDim2.new(0, 150, 1, 0)
-ScriptTitle.Position = UDim2.new(0, 10, 0, 0)
-ScriptTitle.Text = "Snowy Hub V3"
-ScriptTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-ScriptTitle.Font = Enum.Font.SourceSansBold
-ScriptTitle.TextSize = 22
-ScriptTitle.TextXAlignment = Enum.TextXAlignment.Left
-ScriptTitle.BackgroundTransparency = 1
-ScriptTitle.Parent = TopBar
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, -50, 1, 0)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.Text = "Snowy Hub V3"
+Title.TextColor3 = COLORS.text
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 20
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.BackgroundTransparency = 1
+Title.Parent = TopBar
 
 local CloseBtn = Instance.new("TextButton")
-CloseBtn.Size = UDim2.new(0, 32, 0, 32)
-CloseBtn.Position = UDim2.new(1, -42, 0.5, -16)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -40, 0.5, -15)
+CloseBtn.BackgroundColor3 = COLORS.secondary
 CloseBtn.Text = "X"
-CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseBtn.Font = Enum.Font.SourceSansBold
-CloseBtn.TextSize = 18
+CloseBtn.TextColor3 = COLORS.text
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.TextSize = 16
 CloseBtn.Parent = TopBar
 
-local UICornerClose = Instance.new("UICorner")
-UICornerClose.CornerRadius = UDim.new(0, 8)
-UICornerClose.Parent = CloseBtn
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(1, 0)
+CloseCorner.Parent = CloseBtn
 
-local SideBar = Instance.new("Frame")
-SideBar.Size = UDim2.new(0, 140, 1, -45)
-SideBar.Position = UDim2.new(0, 0, 0, 45)
-SideBar.BackgroundTransparency = 1
-SideBar.Parent = InnerFrame
+-- Abas
+local TabFrame = Instance.new("Frame")
+TabFrame.Size = UDim2.new(1, 0, 0, 40)
+TabFrame.Position = UDim2.new(0, 0, 0, 40)
+TabFrame.BackgroundColor3 = COLORS.surface
+TabFrame.Parent = MainFrame
 
-local MainContent = Instance.new("ScrollingFrame")
-MainContent.Size = UDim2.new(1, -145, 1, -55)
-MainContent.Position = UDim2.new(0, 145, 0, 50)
-MainContent.BackgroundTransparency = 1
-MainContent.ScrollBarThickness = 8
-MainContent.CanvasSize = UDim2.new(0, 0, 0, 900)
-MainContent.ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255)
-MainContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
-MainContent.Parent = InnerFrame
+local TabMain = Instance.new("TextButton")
+TabMain.Size = UDim2.new(0.25, -2, 0.8, 0)
+TabMain.Position = UDim2.new(0.02, 0, 0.1, 0)
+TabMain.BackgroundColor3 = COLORS.primary
+TabMain.Text = "MAIN"
+TabMain.TextColor3 = COLORS.text
+TabMain.Font = Enum.Font.GothamBold
+TabMain.TextSize = 14
+TabMain.Parent = TabFrame
 
--- Função para criar botões de aba
-local function createTabBtn(name, posIdx)
-    local Btn = Instance.new("TextButton")
-    Btn.Size = UDim2.new(0.85, 0, 0, 40)
-    Btn.Position = UDim2.new(0.075, 0, 0, 20 + (posIdx * 50))
-    Btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-    Btn.Text = name
-    Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Btn.Font = Enum.Font.SourceSansBold
-    Btn.TextSize = 18
-    Btn.Parent = SideBar
-    Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 8)
-    return Btn
-end
+local TabFarm = Instance.new("TextButton")
+TabFarm.Size = UDim2.new(0.25, -2, 0.8, 0)
+TabFarm.Position = UDim2.new(0.27, 0, 0.1, 0)
+TabFarm.BackgroundColor3 = COLORS.primary
+TabFarm.Text = "FARM"
+TabFarm.TextColor3 = COLORS.text
+TabFarm.Font = Enum.Font.GothamBold
+TabFarm.TextSize = 14
+TabFarm.Parent = TabFrame
 
-local TabMain = createTabBtn("Main", 0)
-local TabFarm = createTabBtn("Farm", 1)
-local TabBuy = createTabBtn("Buy", 2)
-local TabSpeed = createTabBtn("Speed", 3)
+local TabMisc = Instance.new("TextButton")
+TabMisc.Size = UDim2.new(0.25, -2, 0.8, 0)
+TabMisc.Position = UDim2.new(0.52, 0, 0.1, 0)
+TabMisc.BackgroundColor3 = COLORS.primary
+TabMisc.Text = "MISC"
+TabMisc.TextColor3 = COLORS.text
+TabMisc.Font = Enum.Font.GothamBold
+TabMisc.TextSize = 14
+TabMisc.Parent = TabFrame
 
-local options = {Main = {}, Farm = {}, Buy = {}, Speed = {}}
+local TabSpeed = Instance.new("TextButton")
+TabSpeed.Size = UDim2.new(0.25, -2, 0.8, 0)
+TabSpeed.Position = UDim2.new(0.77, 0, 0.1, 0)
+TabSpeed.BackgroundColor3 = COLORS.primary
+TabSpeed.Text = "SPEED"
+TabSpeed.TextColor3 = COLORS.text
+TabSpeed.Font = Enum.Font.GothamBold
+TabSpeed.TextSize = 14
+TabSpeed.Parent = TabFrame
 
--- Função para criar opções toggle
-local function createOption(name, posIdx, startActive, tab, callback)
+-- Área de conteúdo (ScrollFrame ajustado)
+local Content = Instance.new("ScrollingFrame")
+Content.Size = UDim2.new(1, -20, 1, -120)
+Content.Position = UDim2.new(0, 10, 0, 90)
+Content.BackgroundTransparency = 1
+Content.ScrollBarThickness = 4
+Content.CanvasSize = UDim2.new(0, 0, 2, 0) -- Tamanho fixo maior
+Content.ScrollBarImageColor3 = COLORS.primary
+Content.Parent = MainFrame
+Content.AutomaticCanvasSize = Enum.AutomaticSize.Y
+Content.ClipsDescendants = true
+Content.ScrollingEnabled = true
+Content.VerticalScrollBarPosition = Enum.VerticalScrollBarPosition.Right
+
+-- Opções por aba
+local options = {
+    MAIN = {},
+    FARM = {},
+    MISC = {},
+    SPEED = {}
+}
+
+-- Função para criar toggle
+local function createToggle(name, posIdx, tab, startActive, callback)
     local Container = Instance.new("Frame")
-    Container.Size = UDim2.new(0.95, 0, 0, 50)
-    Container.Position = UDim2.new(0, 0, 0, posIdx * 60)
-    Container.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-    Container.Visible = (tab == "Main")
-    Container.Parent = MainContent
-    Instance.new("UICorner", Container).CornerRadius = UDim.new(0, 10)
+    Container.Size = UDim2.new(1, -10, 0, 45)
+    Container.Position = UDim2.new(0, 5, 0, 5 + (posIdx * 50))
+    Container.BackgroundColor3 = COLORS.surface
+    Container.Visible = (tab == "MAIN")
+    Container.Parent = Content
+    Container.ClipsDescendants = true
+
+    local ContainerCorner = Instance.new("UICorner")
+    ContainerCorner.CornerRadius = UDim.new(0, 8)
+    ContainerCorner.Parent = Container
 
     local Label = Instance.new("TextLabel")
-    Label.Size = UDim2.new(0.6, 0, 1, 0)
-    Label.Position = UDim2.new(0.05, 0, 0, 0)
+    Label.Size = UDim2.new(0.7, -10, 1, 0)
+    Label.Position = UDim2.new(0, 10, 0, 0)
     Label.Text = name
-    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Label.BackgroundTransparency = 1
+    Label.TextColor3 = COLORS.text
+    Label.Font = Enum.Font.Gotham
+    Label.TextSize = 14
     Label.TextXAlignment = Enum.TextXAlignment.Left
-    Label.Font = Enum.Font.SourceSans
-    Label.TextSize = 16
+    Label.BackgroundTransparency = 1
     Label.Parent = Container
 
-    local SwitchBG = Instance.new("TextButton")
-    SwitchBG.Size = UDim2.new(0, 45, 0, 24)
-    SwitchBG.Position = UDim2.new(1, -55, 0.5, -12)
-    SwitchBG.BackgroundColor3 = startActive and Color3.fromRGB(150, 150, 150) or Color3.fromRGB(40, 40, 40)
-    SwitchBG.Text = ""
+    local SwitchBG = Instance.new("Frame")
+    SwitchBG.Size = UDim2.new(0, 44, 0, 22)
+    SwitchBG.Position = UDim2.new(1, -54, 0.5, -11)
+    SwitchBG.BackgroundColor3 = startActive and COLORS.success or COLORS.secondary
     SwitchBG.Parent = Container
-    Instance.new("UICorner", SwitchBG).CornerRadius = UDim.new(1, 0)
 
-    local Circle = Instance.new("Frame")
-    Circle.Size = UDim2.new(0, 18, 0, 18)
-    Circle.Position = startActive and UDim2.new(1, -21, 0.5, -9) or UDim2.new(0, 3, 0.5, -9)
-    Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Circle.Parent = SwitchBG
-    Instance.new("UICorner", Circle).CornerRadius = UDim.new(1, 0)
+    local SwitchCorner = Instance.new("UICorner")
+    SwitchCorner.CornerRadius = UDim.new(1, 0)
+    SwitchCorner.Parent = SwitchBG
+
+    local SwitchButton = Instance.new("TextButton")
+    SwitchButton.Size = UDim2.new(1, 0, 1, 0)
+    SwitchButton.BackgroundTransparency = 1
+    SwitchButton.Text = ""
+    SwitchButton.Parent = SwitchBG
+
+    local SwitchCircle = Instance.new("Frame")
+    SwitchCircle.Size = UDim2.new(0, 18, 0, 18)
+    SwitchCircle.Position = startActive and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 3, 0.5, -9)
+    SwitchCircle.BackgroundColor3 = COLORS.text
+    SwitchCircle.Parent = SwitchBG
+
+    local CircleCorner = Instance.new("UICorner")
+    CircleCorner.CornerRadius = UDim.new(1, 0)
+    CircleCorner.Parent = SwitchCircle
 
     local active = startActive
-    SwitchBG.MouseButton1Click:Connect(function()
+
+    SwitchButton.MouseButton1Click:Connect(function()
         active = not active
-        Circle:TweenPosition(active and UDim2.new(1, -21, 0.5, -9) or UDim2.new(0, 3, 0.5, -9), "Out", "Quad", 0.2, true)
-        SwitchBG.BackgroundColor3 = active and Color3.fromRGB(150, 150, 150) or Color3.fromRGB(40, 40, 40)
+        TweenService:Create(SwitchBG, TweenInfo.new(0.2), {
+            BackgroundColor3 = active and COLORS.success or COLORS.secondary
+        }):Play()
+        TweenService:Create(SwitchCircle, TweenInfo.new(0.2), {
+            Position = active and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 3, 0.5, -9)
+        }):Play()
         if callback then callback(active) end
     end)
 
@@ -182,64 +226,85 @@ local function createOption(name, posIdx, startActive, tab, callback)
     return function() return active end
 end
 
--- Função pra criar slider de velocidade
-local function createSpeedSlider(name, posIdx, tab)
+-- Função para criar slider (CORRIGIDO - sem scroll extra)
+local function createSlider(name, posIdx, tab, min, max, default)
     local Container = Instance.new("Frame")
-    Container.Size = UDim2.new(0.95, 0, 0, 70)
-    Container.Position = UDim2.new(0, 0, 0, posIdx * 80)
-    Container.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    Container.Size = UDim2.new(1, -10, 0, 60)
+    Container.Position = UDim2.new(0, 5, 0, 5 + (posIdx * 65))
+    Container.BackgroundColor3 = COLORS.surface
     Container.Visible = false
-    Container.Parent = MainContent
-    Instance.new("UICorner", Container).CornerRadius = UDim.new(0, 10)
+    Container.Parent = Content
+    Container.ClipsDescendants = true
+
+    local ContainerCorner = Instance.new("UICorner")
+    ContainerCorner.CornerRadius = UDim.new(0, 8)
+    ContainerCorner.Parent = Container
 
     local Label = Instance.new("TextLabel")
-    Label.Size = UDim2.new(1, -20, 0, 30)
+    Label.Size = UDim2.new(1, -20, 0, 25)
     Label.Position = UDim2.new(0, 10, 0, 5)
     Label.Text = name
-    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Label.BackgroundTransparency = 1
+    Label.TextColor3 = COLORS.text
+    Label.Font = Enum.Font.Gotham
+    Label.TextSize = 14
     Label.TextXAlignment = Enum.TextXAlignment.Left
-    Label.Font = Enum.Font.SourceSansBold
-    Label.TextSize = 18
+    Label.BackgroundTransparency = 1
     Label.Parent = Container
 
     local SliderBg = Instance.new("Frame")
-    SliderBg.Size = UDim2.new(0.9, 0, 0, 20)
-    SliderBg.Position = UDim2.new(0.05, 0, 0, 40)
-    SliderBg.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    SliderBg.Size = UDim2.new(0.8, -10, 0, 4)
+    SliderBg.Position = UDim2.new(0.1, 0, 0, 40)
+    SliderBg.BackgroundColor3 = COLORS.secondary
     SliderBg.Parent = Container
-    Instance.new("UICorner", SliderBg).CornerRadius = UDim.new(1, 0)
+
+    local SliderBgCorner = Instance.new("UICorner")
+    SliderBgCorner.CornerRadius = UDim.new(1, 0)
+    SliderBgCorner.Parent = SliderBg
 
     local SliderFill = Instance.new("Frame")
-    SliderFill.Size = UDim2.new(0.5, 0, 1, 0)
-    SliderFill.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+    SliderFill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
+    SliderFill.BackgroundColor3 = COLORS.primary
     SliderFill.Parent = SliderBg
-    Instance.new("UICorner", SliderFill).CornerRadius = UDim.new(1, 0)
+
+    local SliderFillCorner = Instance.new("UICorner")
+    SliderFillCorner.CornerRadius = UDim.new(1, 0)
+    SliderFillCorner.Parent = SliderFill
+
+    local SliderButton = Instance.new("TextButton")
+    SliderButton.Size = UDim2.new(0, 16, 0, 16)
+    SliderButton.Position = UDim2.new(SliderFill.Size.X.Scale, -8, 0.5, -8)
+    SliderButton.BackgroundColor3 = COLORS.primary
+    SliderButton.Text = ""
+    SliderButton.Parent = Container
+
+    local SliderButtonCorner = Instance.new("UICorner")
+    SliderButtonCorner.CornerRadius = UDim.new(1, 0)
+    SliderButtonCorner.Parent = SliderButton
 
     local ValueLabel = Instance.new("TextLabel")
-    ValueLabel.Size = UDim2.new(0, 50, 0, 20)
-    ValueLabel.Position = UDim2.new(1, -60, 0, 40)
-    ValueLabel.Text = "16"
-    ValueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ValueLabel.Size = UDim2.new(0, 40, 0, 20)
+    ValueLabel.Position = UDim2.new(0.9, -20, 0, 35)
+    ValueLabel.Text = tostring(default)
+    ValueLabel.TextColor3 = COLORS.primary
+    ValueLabel.Font = Enum.Font.GothamBold
+    ValueLabel.TextSize = 14
     ValueLabel.BackgroundTransparency = 1
-    ValueLabel.Font = Enum.Font.SourceSansBold
-    ValueLabel.TextSize = 16
     ValueLabel.Parent = Container
 
-    local speed = 16
+    local value = default
     local dragging = false
 
     local function updateSlider(input)
-        local pos = UDim2.new(math.clamp((input.Position.X - SliderBg.AbsolutePosition.X) / SliderBg.AbsoluteSize.X, 0, 1), 0, 0.5, 0)
-        SliderFill.Size = UDim2.new(pos.X.Scale, 0, 1, 0)
-        speed = math.floor(16 + (pos.X.Scale * 84))
-        ValueLabel.Text = tostring(speed)
+        local posX = math.clamp((input.Position.X - SliderBg.AbsolutePosition.X) / SliderBg.AbsoluteSize.X, 0, 1)
+        SliderFill.Size = UDim2.new(posX, 0, 1, 0)
+        SliderButton.Position = UDim2.new(posX, -8, 0.5, -8)
+        value = math.floor(min + (posX * (max - min)))
+        ValueLabel.Text = tostring(value)
     end
 
-    SliderBg.InputBegan:Connect(function(input)
+    SliderButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
-            updateSlider(input)
         end
     end)
 
@@ -256,55 +321,51 @@ local function createSpeedSlider(name, posIdx, tab)
     end)
 
     table.insert(options[tab], Container)
-    return function() return speed end
+    return function() return value end
 end
 
--- === Opções da Main ===
-local isGodRagdoll = createOption("Anti Ragdoll", 0, true, "Main")
-local isInstantCollect = createOption("Instant Collect (sem segurar)", 1, true, "Main")
-local isLowMode = createOption("Low Mode (mais FPS)", 2, false, "Main")
-local isAutoBuyBrainrot = createOption("Auto Buy Brainrots (não perder)", 3, false, "Main")
+-- Criar opções
+-- MAIN
+local isGodRagdoll = createToggle("Anti Ragdoll", 0, "MAIN", true)
+local isInstantCollect = createToggle("Instant Collect", 1, "MAIN", true)
+local isLowMode = createToggle("Low Mode", 2, "MAIN", false)
+local isAutoBuyBrainrot = createToggle("Auto Buy Brainrot", 3, "MAIN", false)
 
--- === Opções do Farm (TODAS as raridades) ===
-local isAutoCommon = createOption("Auto Common", 0, false, "Farm")
-local isAutoUncommon = createOption("Auto Uncommon", 1, false, "Farm")
-local isAutoRare = createOption("Auto Rare", 2, false, "Farm")
-local isAutoEpic = createOption("Auto Epic", 3, false, "Farm")
-local isAutoLegendary = createOption("Auto Legendary", 4, false, "Farm")
-local isAutoMythic = createOption("Auto Mythic", 5, false, "Farm")
-local isAutoSecret = createOption("Auto Secret", 6, false, "Farm")
-local isAutoStellar = createOption("Auto Stellar", 7, false, "Farm")
+-- FARM
+local farmToggles = {}
+for i, name in ipairs({"Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic", "Secret", "Stellar"}) do
+    farmToggles[name] = createToggle(name, i-1, "FARM", false)
+end
 
--- === Opções de Compra ===
-local buyIce = createOption("Auto Ice Emblem", 0, false, "Buy")
-local buyVic = createOption("Auto Victrola", 1, false, "Buy")
-local buyStar = createOption("Auto Star", 2, false, "Buy")
-local buyFlow = createOption("Auto Flower", 3, false, "Buy")
-local buyPhon = createOption("Auto Phone", 4, false, "Buy")
+-- MISC (Invisible e Fly)
+local isInvisible = createToggle("Invisible", 0, "MISC", false)
+local isFly = createToggle("Fly", 1, "MISC", false)
 
--- Slider de velocidade
-local getSpeed = createSpeedSlider("Velocidade do Player", 0, "Speed")
+-- SPEED (apenas um slider)
+local getSpeed = createSlider("WalkSpeed", 0, "SPEED", 16, 100, 16)
 
--- Materiais para Low Mode
-local originalMaterials = {}
-
--- Função pra trocar abas
+-- Função para trocar abas
 local function showTab(tabName)
-    for _, v in pairs(options.Main) do v.Visible = (tabName == "Main") end
-    for _, v in pairs(options.Farm) do v.Visible = (tabName == "Farm") end
-    for _, v in pairs(options.Buy) do v.Visible = (tabName == "Buy") end
-    for _, v in pairs(options.Speed) do v.Visible = (tabName == "Speed") end
+    for tab, items in pairs(options) do
+        for _, item in ipairs(items) do
+            item.Visible = (tab == tabName)
+        end
+    end
 end
 
-TabMain.MouseButton1Click:Connect(function() showTab("Main") end)
-TabFarm.MouseButton1Click:Connect(function() showTab("Farm") end)
-TabBuy.MouseButton1Click:Connect(function() showTab("Buy") end)
-TabSpeed.MouseButton1Click:Connect(function() showTab("Speed") end)
+-- Conectar abas
+TabMain.MouseButton1Click:Connect(function() showTab("MAIN") end)
+TabFarm.MouseButton1Click:Connect(function() showTab("FARM") end)
+TabMisc.MouseButton1Click:Connect(function() showTab("MISC") end)
+TabSpeed.MouseButton1Click:Connect(function() showTab("SPEED") end)
+
+-- Mostrar MAIN por padrão
+showTab("MAIN")
 
 -- Dragging do botão
 local dragging, dragStart, startPos
 FloatingButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = true
         dragStart = input.Position
         startPos = FloatingButton.Position
@@ -312,7 +373,7 @@ FloatingButton.InputBegan:Connect(function(input)
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
         local delta = input.Position - dragStart
         FloatingButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
@@ -320,20 +381,21 @@ end)
 
 UserInputService.InputEnded:Connect(function() dragging = false end)
 
--- Fechar com botão X
+-- Controles do menu
+local function toggleMenu()
+    MainFrame.Visible = not MainFrame.Visible
+end
+
+FloatingButton.MouseButton1Click:Connect(toggleMenu)
 CloseBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false end)
 
--- Abrir/Fechar com tecla L
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if not gameProcessed and input.KeyCode == Enum.KeyCode.L then
-        MainFrame.Visible = not MainFrame.Visible
+UserInputService.InputBegan:Connect(function(input, gp)
+    if not gp and input.KeyCode == Enum.KeyCode.L then
+        toggleMenu()
     end
 end)
 
--- Botão flutuante também abre
-FloatingButton.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
-
--- === FUNÇÕES ===
+-- === FUNÇÕES DO JOGO ===
 
 -- 1. ANTI RAGDOLL
 RunService.Heartbeat:Connect(function()
@@ -350,7 +412,7 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- 2. INSTANT COLLECT (ProximityPrompt sem segurar)
+-- 2. INSTANT COLLECT
 task.spawn(function()
     while task.wait(1) do
         if isInstantCollect() then
@@ -366,6 +428,7 @@ task.spawn(function()
 end)
 
 -- 3. LOW MODE
+local originalMaterials = {}
 task.spawn(function()
     while task.wait(0.5) do
         if isLowMode() then
@@ -379,18 +442,14 @@ task.spawn(function()
             end)
         else
             for part, mat in pairs(originalMaterials) do
-                pcall(function()
-                    if part and part.Parent then
-                        part.Material = mat
-                    end
-                end)
+                pcall(function() if part and part.Parent then part.Material = mat end end)
             end
             originalMaterials = {}
         end
     end
 end)
 
--- 4. AUTO BUY BRAINROTS (não perder para outros)
+-- 4. AUTO BUY BRAINROTS
 task.spawn(function()
     local blackListNames = {["SellPrompt"] = true, ["GrabPrompt"] = true, ["PlacePrompt"] = true, ["AddPrompt"] = true}
     while task.wait(0.1) do
@@ -431,12 +490,88 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- 6. AUTO FARM (Todas as raridades) com COMPRA AUTOMÁTICA
+-- 6. INVISIBLE
+local function setInvisible(state)
+    local char = Player.Character
+    if not char then return end
+    local alpha = state and 0.8 or 0
+    for _, v in pairs(char:GetDescendants()) do
+        if v:IsA("BasePart") or v:IsA("MeshPart") then
+            v.Transparency = alpha
+        end
+    end
+end
+
+isInvisibleCallback = isInvisible
+task.spawn(function()
+    while task.wait(0.3) do
+        if isInvisible() then
+            setInvisible(true)
+        else
+            setInvisible(false)
+        end
+    end
+end)
+
+-- 7. FLY
+local flying = false
+local bodyGyro, bodyVelocity
+
+local function fly(state)
+    local char = Player.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    local humanoid = char:FindFirstChild("Humanoid")
+    if not root or not humanoid then return end
+
+    if state and not flying then
+        flying = true
+        humanoid.PlatformStand = true
+        
+        bodyGyro = Instance.new("BodyGyro")
+        bodyGyro.P = 9e4
+        bodyGyro.maxTorque = Vector3.new(9e4, 9e4, 9e4)
+        bodyGyro.CFrame = root.CFrame
+        bodyGyro.Parent = root
+
+        bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+        bodyVelocity.MaxForce = Vector3.new(9e4, 9e4, 9e4)
+        bodyVelocity.Parent = root
+
+        RunService.Heartbeat:Connect(function()
+            if not flying then return end
+            local moveDir = Vector3.new()
+            if UserInputService:IsKeyDown(Enum.KeyCode.W) then moveDir = moveDir + workspace.CurrentCamera.CFrame.LookVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.S) then moveDir = moveDir - workspace.CurrentCamera.CFrame.LookVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.A) then moveDir = moveDir - workspace.CurrentCamera.CFrame.RightVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.D) then moveDir = moveDir + workspace.CurrentCamera.CFrame.RightVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.Space) then moveDir = moveDir + Vector3.new(0, 1, 0) end
+            if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then moveDir = moveDir - Vector3.new(0, 1, 0) end
+            
+            bodyVelocity.Velocity = moveDir * (getSpeed() * 2)
+            bodyGyro.CFrame = workspace.CurrentCamera.CFrame
+        end)
+    elseif not state and flying then
+        flying = false
+        humanoid.PlatformStand = false
+        if bodyGyro then bodyGyro:Destroy() end
+        if bodyVelocity then bodyVelocity:Destroy() end
+    end
+end
+
+isFlyCallback = isFly
+task.spawn(function()
+    while task.wait(0.3) do
+        fly(isFly())
+    end
+end)
+
+-- 8. AUTO FARM (com compra automática)
 local brainrotsFolder = workspace:WaitForChild("Client", 10):WaitForChild("Path", 5):WaitForChild("Brainrots", 5)
 local targetHead = nil
 local isHidden = false
 
--- Lista completa de raridades
 local rarityNames = {
     common = {"common"},
     uncommon = {"uncommon"},
@@ -462,20 +597,15 @@ local function setVisibility(visible)
     isHidden = not visible
 end
 
--- Função para comprar o pet automaticamente (spamar E)
 local function autoBuyPet()
     local char = Player.Character
     if not char or not char:FindFirstChild("HumanoidRootPart") then return false end
-    
-    -- Procura por ProximityPrompt perto do player
     for _, prompt in pairs(workspace:GetDescendants()) do
         if prompt:IsA("ProximityPrompt") and prompt.Enabled then
             local part = prompt.Parent
             if part and part:IsA("BasePart") then
                 local distance = (char.HumanoidRootPart.Position - part.Position).Magnitude
-                -- Se estiver perto do prompt (distância de ativação)
                 if distance <= prompt.MaxActivationDistance then
-                    -- Ativa o prompt (compra o pet)
                     fireproximityprompt(prompt)
                     return true
                 end
@@ -485,26 +615,24 @@ local function autoBuyPet()
     return false
 end
 
--- Spam de compra mais rápido (10x por segundo)
 task.spawn(function()
     while task.wait(0.1) do
-        if targetHead then -- Se tem um alvo
+        if targetHead then
             pcall(autoBuyPet)
         end
     end
 end)
 
 RunService.Heartbeat:Connect(function()
-    -- Verifica quais raridades estão ativas
     local activeRarities = {}
-    if isAutoCommon() then table.insert(activeRarities, "common") end
-    if isAutoUncommon() then table.insert(activeRarities, "uncommon") end
-    if isAutoRare() then table.insert(activeRarities, "rare") end
-    if isAutoEpic() then table.insert(activeRarities, "epic") end
-    if isAutoLegendary() then table.insert(activeRarities, "legendary") end
-    if isAutoMythic() then table.insert(activeRarities, "mythic") end
-    if isAutoSecret() then table.insert(activeRarities, "secret") end
-    if isAutoStellar() then table.insert(activeRarities, "stellar") end
+    if farmToggles["Common"]() then table.insert(activeRarities, "common") end
+    if farmToggles["Uncommon"]() then table.insert(activeRarities, "uncommon") end
+    if farmToggles["Rare"]() then table.insert(activeRarities, "rare") end
+    if farmToggles["Epic"]() then table.insert(activeRarities, "epic") end
+    if farmToggles["Legendary"]() then table.insert(activeRarities, "legendary") end
+    if farmToggles["Mythic"]() then table.insert(activeRarities, "mythic") end
+    if farmToggles["Secret"]() then table.insert(activeRarities, "secret") end
+    if farmToggles["Stellar"]() then table.insert(activeRarities, "stellar") end
 
     if #activeRarities == 0 then 
         targetHead = nil 
@@ -516,20 +644,13 @@ RunService.Heartbeat:Connect(function()
     local root = char and char:FindFirstChild("HumanoidRootPart")
     if not root then return end
 
-    -- Se já tem um alvo e ele ainda existe
     if targetHead and targetHead.Parent and targetHead.Parent.Parent == brainrotsFolder then
-        -- Fica perto do pet para comprar
         root.CFrame = targetHead.CFrame * CFrame.new(0, 0, -3)
-        
         if not isHidden then setVisibility(false) end
-        
-        -- Tenta comprar a cada frame também
         pcall(autoBuyPet)
-        
         return
     end
 
-    -- Procura novo alvo
     targetHead = nil
     if isHidden then setVisibility(true) end
 
@@ -548,57 +669,52 @@ RunService.Heartbeat:Connect(function()
                 for _, rarity in ipairs(activeRarities) do
                     local isTarget = false
                     local names = rarityNames[rarity]
-                    
                     for _, name in ipairs(names) do
                         if rarityText:find(name) or titleText == name then
                             isTarget = true
                             break
                         end
                     end
-                    
                     if isTarget then
                         targetHead = head
-                        root.CFrame = head.CFrame * CFrame.new(0, 0, -3) -- Teleporta e já posiciona para comprar
+                        root.CFrame = head.CFrame * CFrame.new(0, 0, -3)
                         break
                     end
                 end
-                
                 if targetHead then break end
             end
         end
     end
 end)
 
--- 7. AUTO COMPRAR INGREDIENTES
-local function isAnyBuyActive()
-    return buyIce() or buyVic() or buyStar() or buyFlow() or buyPhon()
-end
-
-local buyList = {
-    {get = buyIce, name = "IceEmblem"},
-    {get = buyVic, name = "Victrola"},
-    {get = buyStar, name = "Star"},
-    {get = buyFlow, name = "Flower"},
-    {get = buyPhon, name = "Phone"}
+-- 9. AUTO COMPRAR FLORES (CORRIGIDO)
+local buyItems = {
+    {toggle = buyIce, name = "IceEmblem"},
+    {toggle = buyVic, name = "Victrola"},
+    {toggle = buyStar, name = "Star"},
+    {toggle = buyFlow, name = "Flower"},
+    {toggle = buyPhon, name = "Phone"}
 }
+
+-- Criar os toggles de compra primeiro
+local buyIce = createToggle("Ice Emblem", 0, "BUY", false)
+local buyVic = createToggle("Victrola", 1, "BUY", false)
+local buyStar = createToggle("Star", 2, "BUY", false)
+local buyFlow = createToggle("Flower", 3, "BUY", false)
+local buyPhon = createToggle("Phone", 4, "BUY", false)
 
 task.spawn(function()
     local Bridge = ReplicatedStorage:WaitForChild("Remotes", 5):WaitForChild("Bridge")
-    while task.wait(1) do
-        if isAnyBuyActive() then
-            pcall(function()
-                for _, item in ipairs(buyList) do
-                    if item.get() then
-                        Bridge:FireServer("General", "Buy", item.name)
-                    end
-                end
-            end)
+    local buyToggles = {buyIce, buyVic, buyStar, buyFlow, buyPhon}
+    local buyNames = {"IceEmblem", "Victrola", "Star", "Flower", "Phone"}
+    
+    while task.wait(0.5) do
+        for i = 1, 5 do
+            if buyToggles[i]() then
+                pcall(function()
+                    Bridge:FireServer("General", "Buy", buyNames[i])
+                end)
+            end
         end
     end
 end)
-
-print("✅ Snowy Hub V3 carregado!")
-print("📌 Pressione L para abrir/fechar")
-print("📌 Abas: Main | Farm | Buy | Speed")
-print("📌 Main: Anti Ragdoll, Instant Collect, Low Mode, Auto Buy Brainrot")
-print("📌 Farm: Common até Stellar (8 raridades) - com COMPRA AUTOMÁTICA")
