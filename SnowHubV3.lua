@@ -5,7 +5,7 @@ local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
--- Configurações de animação (otimizadas)
+-- Configurações de animação
 local ANIM_CONFIG = {
     fadeTime = 0.2,
     slideTime = 0.25,
@@ -17,7 +17,7 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "SnowyHub"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
-ScreenGui.IgnoreGuiInset = true -- Melhor para performance
+ScreenGui.IgnoreGuiInset = true
 
 -- Cores modernas
 local COLORS = {
@@ -31,7 +31,7 @@ local COLORS = {
     danger = Color3.fromRGB(255, 100, 100)
 }
 
--- Botão flutuante com efeito de brilho
+-- Botão flutuante com letra S elegante
 local FloatingButton = Instance.new("TextButton")
 FloatingButton.Size = UDim2.new(0, 60, 0, 60)
 FloatingButton.Position = UDim2.new(0, 50, 0.5, -30)
@@ -52,16 +52,17 @@ Shadow.ScaleType = Enum.ScaleType.Slice
 Shadow.SliceCenter = Rect.new(10, 10, 10, 10)
 Shadow.Parent = FloatingButton
 
--- Ícone do botão
-local BtnIcon = Instance.new("ImageLabel")
-BtnIcon.Size = UDim2.new(0.6, 0, 0.6, 0)
-BtnIcon.Position = UDim2.new(0.2, 0, 0.2, 0)
-BtnIcon.BackgroundTransparency = 1
-BtnIcon.Image = "rbxassetid://4483345998" -- Ícone de floco de neve
-BtnIcon.ImageColor3 = COLORS.text
-BtnIcon.Parent = FloatingButton
+-- Letra S elegante (em vez de ícone)
+local BtnLabel = Instance.new("TextLabel")
+BtnLabel.Size = UDim2.new(1, 0, 1, 0)
+BtnLabel.BackgroundTransparency = 1
+BtnLabel.Text = "S"
+BtnLabel.TextColor3 = COLORS.text
+BtnLabel.TextSize = 32
+BtnLabel.Font = Enum.Font.GothamBold
+BtnLabel.Parent = FloatingButton
 
--- Efeito de brilho no botão
+-- Efeito de brilho
 local Glow = Instance.new("ImageLabel")
 Glow.Size = UDim2.new(1.2, 0, 1.2, 0)
 Glow.Position = UDim2.new(-0.1, 0, -0.1, 0)
@@ -116,18 +117,21 @@ TopGradient.Color = ColorSequence.new({
 TopGradient.Rotation = 90
 TopGradient.Parent = TopBar
 
--- Título com ícone
-local TitleIcon = Instance.new("ImageLabel")
+-- Letra S no título
+local TitleIcon = Instance.new("TextLabel")
 TitleIcon.Size = UDim2.new(0, 30, 0, 30)
 TitleIcon.Position = UDim2.new(0, 15, 0.5, -15)
 TitleIcon.BackgroundTransparency = 1
-TitleIcon.Image = "rbxassetid://4483345998"
+TitleIcon.Text = "S"
+TitleIcon.TextColor3 = COLORS.text
+TitleIcon.Font = Enum.Font.GothamBold
+TitleIcon.TextSize = 24
 TitleIcon.Parent = TopBar
 
 local ScriptTitle = Instance.new("TextLabel")
 ScriptTitle.Size = UDim2.new(0, 200, 1, 0)
 ScriptTitle.Position = UDim2.new(0, 55, 0, 0)
-ScriptTitle.Text = "Snowy Hub V3"
+ScriptTitle.Text = "nowy Hub V3"
 ScriptTitle.TextColor3 = COLORS.text
 ScriptTitle.Font = Enum.Font.GothamBold
 ScriptTitle.TextSize = 24
@@ -135,13 +139,14 @@ ScriptTitle.TextXAlignment = Enum.TextXAlignment.Left
 ScriptTitle.BackgroundTransparency = 1
 ScriptTitle.Parent = TopBar
 
+-- Versão
 local VersionLabel = Instance.new("TextLabel")
 VersionLabel.Size = UDim2.new(0, 50, 1, 0)
 VersionLabel.Position = UDim2.new(1, -100, 0, 0)
-VersionLabel.Text = "1.0.0"
+VersionLabel.Text = "v3.0"
 VersionLabel.TextColor3 = COLORS.textSoft
 VersionLabel.Font = Enum.Font.Gotham
-ScriptTitle.TextSize = 14
+VersionLabel.TextSize = 14
 VersionLabel.TextXAlignment = Enum.TextXAlignment.Right
 VersionLabel.BackgroundTransparency = 1
 VersionLabel.Parent = TopBar
@@ -151,20 +156,15 @@ local CloseBtn = Instance.new("TextButton")
 CloseBtn.Size = UDim2.new(0, 40, 0, 40)
 CloseBtn.Position = UDim2.new(1, -50, 0.5, -20)
 CloseBtn.BackgroundColor3 = COLORS.secondary
-CloseBtn.Text = ""
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = COLORS.text
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.TextSize = 18
 CloseBtn.Parent = TopBar
 
 local CloseCorner = Instance.new("UICorner")
 CloseCorner.CornerRadius = UDim.new(1, 0)
 CloseCorner.Parent = CloseBtn
-
-local CloseIcon = Instance.new("ImageLabel")
-CloseIcon.Size = UDim2.new(0.5, 0, 0.5, 0)
-CloseIcon.Position = UDim2.new(0.25, 0, 0.25, 0)
-CloseIcon.BackgroundTransparency = 1
-CloseIcon.Image = "rbxassetid://6031094678" -- Ícone X
-CloseIcon.ImageColor3 = COLORS.text
-CloseIcon.Parent = CloseBtn
 
 -- Sidebar
 local SideBar = Instance.new("Frame")
@@ -196,8 +196,8 @@ MainContent.ScrollBarImageColor3 = COLORS.primary
 MainContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
 MainContent.Parent = MainFrame
 
--- Função para criar botões de aba (com animação)
-local function createTabBtn(name, posIdx, iconId)
+-- Função para criar botões de aba
+local function createTabBtn(name, posIdx)
     local Btn = Instance.new("TextButton")
     Btn.Size = UDim2.new(0.9, 0, 0, 50)
     Btn.Position = UDim2.new(0.05, 0, 0, 80 + (posIdx * 60))
@@ -212,34 +212,24 @@ local function createTabBtn(name, posIdx, iconId)
     BtnCorner.CornerRadius = UDim.new(0, 12)
     BtnCorner.Parent = Btn
 
-    local Icon = Instance.new("ImageLabel")
-    Icon.Size = UDim2.new(0, 24, 0, 24)
-    Icon.Position = UDim2.new(0, 15, 0.5, -12)
-    Icon.BackgroundTransparency = 1
-    Icon.Image = iconId or "rbxassetid://4483362458"
-    Icon.ImageColor3 = COLORS.text
-    Icon.Parent = Btn
-
     local Label = Instance.new("TextLabel")
-    Label.Size = UDim2.new(1, -50, 1, 0)
-    Label.Position = UDim2.new(0, 50, 0, 0)
+    Label.Size = UDim2.new(1, 0, 1, 0)
     Label.Text = name
     Label.TextColor3 = COLORS.text
     Label.Font = Enum.Font.Gotham
     Label.TextSize = 16
-    Label.TextXAlignment = Enum.TextXAlignment.Left
     Label.BackgroundTransparency = 1
     Label.Parent = Btn
 
     -- Efeito hover
     Btn.MouseEnter:Connect(function()
-        TweenService:Create(Btn, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        TweenService:Create(Btn, TweenInfo.new(0.2), {
             BackgroundTransparency = 0.4
         }):Play()
     end)
 
     Btn.MouseLeave:Connect(function()
-        TweenService:Create(Btn, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        TweenService:Create(Btn, TweenInfo.new(0.2), {
             BackgroundTransparency = 0.8
         }):Play()
     end)
@@ -247,19 +237,19 @@ local function createTabBtn(name, posIdx, iconId)
     return Btn
 end
 
--- Criar abas com ícones
-local TabMain = createTabBtn("Principal", 0, "rbxassetid://6034509869") -- Ícone home
-local TabFarm = createTabBtn("Farm", 1, "rbxassetid://6034530444") -- Ícone farm
-local TabBuy = createTabBtn("Compras", 2, "rbxassetid://6034507510") -- Ícone shop
-local TabSpeed = createTabBtn("Velocidade", 3, "rbxassetid://6034532992") -- Ícone speed
+-- Criar abas
+local TabMain = createTabBtn("PRINCIPAL", 0)
+local TabFarm = createTabBtn("FARM", 1)
+local TabBuy = createTabBtn("COMPRAS", 2)
+local TabSpeed = createTabBtn("VELOCIDADE", 3)
 
--- Função para criar opções toggle (com design moderno)
+-- Função para criar opções toggle
 local function createOption(name, desc, posIdx, tab, startActive, callback)
     local Container = Instance.new("Frame")
     Container.Size = UDim2.new(0.95, 0, 0, 70)
     Container.Position = UDim2.new(0.025, 0, 0, posIdx * 80)
     Container.BackgroundColor3 = COLORS.surface
-    Container.Visible = (tab == "Main")
+    Container.Visible = (tab == "PRINCIPAL")
     Container.Parent = MainContent
     Container.ClipsDescendants = true
 
@@ -335,7 +325,7 @@ local function createOption(name, desc, posIdx, tab, startActive, callback)
     return function() return active end
 end
 
--- Função pra criar slider (com design moderno)
+-- Função pra criar slider
 local function createSlider(name, desc, posIdx, tab, min, max, default)
     local Container = Instance.new("Frame")
     Container.Size = UDim2.new(0.95, 0, 0, 90)
@@ -447,60 +437,51 @@ local function createSlider(name, desc, posIdx, tab, min, max, default)
 end
 
 -- Criar opções
-local options = {Main = {}, Farm = {}, Buy = {}, Speed = {}}
+local options = {PRINCIPAL = {}, FARM = {}, COMPRAS = {}, VELOCIDADE = {}}
 
--- Opções da Main
-local isGodRagdoll = createOption("Anti Ragdoll", "Imune a quedas e imobilização", 0, "Main", true)
-local isInstantCollect = createOption("Instant Collect", "Pega itens sem segurar E", 1, "Main", true)
-local isLowMode = createOption("Low Mode", "Remove texturas para mais FPS", 2, "Main", false)
-local isAutoBuyBrainrot = createOption("Auto Buy Brainrots", "Compra automaticamente para não perder", 3, "Main", false)
+-- Opções da Principal
+local isGodRagdoll = createOption("Anti Ragdoll", "Imune a quedas e imobilização", 0, "PRINCIPAL", true)
+local isInstantCollect = createOption("Instant Collect", "Pega itens sem segurar E", 1, "PRINCIPAL", true)
+local isLowMode = createOption("Low Mode", "Remove texturas para mais FPS", 2, "PRINCIPAL", false)
+local isAutoBuyBrainrot = createOption("Auto Buy Brainrots", "Compra automaticamente para não perder", 3, "PRINCIPAL", false)
 
 -- Opções do Farm
-local isAutoCommon = createOption("Auto Common", "Farm brainrots Common", 0, "Farm", false)
-local isAutoUncommon = createOption("Auto Uncommon", "Farm brainrots Uncommon", 1, "Farm", false)
-local isAutoRare = createOption("Auto Rare", "Farm brainrots Rare", 2, "Farm", false)
-local isAutoEpic = createOption("Auto Epic", "Farm brainrots Epic", 3, "Farm", false)
-local isAutoLegendary = createOption("Auto Legendary", "Farm brainrots Legendary", 4, "Farm", false)
-local isAutoMythic = createOption("Auto Mythic", "Farm brainrots Mythic", 5, "Farm", false)
-local isAutoSecret = createOption("Auto Secret", "Farm brainrots Secret", 6, "Farm", false)
-local isAutoStellar = createOption("Auto Stellar", "Farm brainrots Stellar", 7, "Farm", false)
+local isAutoCommon = createOption("Auto Common", "Farm brainrots Common", 0, "FARM", false)
+local isAutoUncommon = createOption("Auto Uncommon", "Farm brainrots Uncommon", 1, "FARM", false)
+local isAutoRare = createOption("Auto Rare", "Farm brainrots Rare", 2, "FARM", false)
+local isAutoEpic = createOption("Auto Epic", "Farm brainrots Epic", 3, "FARM", false)
+local isAutoLegendary = createOption("Auto Legendary", "Farm brainrots Legendary", 4, "FARM", false)
+local isAutoMythic = createOption("Auto Mythic", "Farm brainrots Mythic", 5, "FARM", false)
+local isAutoSecret = createOption("Auto Secret", "Farm brainrots Secret", 6, "FARM", false)
+local isAutoStellar = createOption("Auto Stellar", "Farm brainrots Stellar", 7, "FARM", false)
 
--- Opções de Compra
-local buyIce = createOption("Auto Ice Emblem", "Compra Ice Emblem automaticamente", 0, "Buy", false)
-local buyVic = createOption("Auto Victrola", "Compra Victrola automaticamente", 1, "Buy", false)
-local buyStar = createOption("Auto Star", "Compra Star automaticamente", 2, "Buy", false)
-local buyFlow = createOption("Auto Flower", "Compra Flower automaticamente", 3, "Buy", false)
-local buyPhon = createOption("Auto Phone", "Compra Phone automaticamente", 4, "Buy", false)
+-- Opções de Compras
+local buyIce = createOption("Auto Ice Emblem", "Compra Ice Emblem automaticamente", 0, "COMPRAS", false)
+local buyVic = createOption("Auto Victrola", "Compra Victrola automaticamente", 1, "COMPRAS", false)
+local buyStar = createOption("Auto Star", "Compra Star automaticamente", 2, "COMPRAS", false)
+local buyFlow = createOption("Auto Flower", "Compra Flower automaticamente", 3, "COMPRAS", false)
+local buyPhon = createOption("Auto Phone", "Compra Phone automaticamente", 4, "COMPRAS", false)
 
 -- Slider de velocidade
-local getSpeed = createSlider("Velocidade do Player", "Ajuste sua velocidade (16-100)", 0, "Speed", 16, 100, 16)
+local getSpeed = createSlider("Velocidade do Player", "Ajuste sua velocidade (16-100)", 0, "VELOCIDADE", 16, 100, 16)
 
--- Materiais para Low Mode
-local originalMaterials = {}
-
--- Função pra trocar abas com animação
+-- Função pra trocar abas
 local function showTab(tabName)
     for tab, containers in pairs(options) do
         local visible = (tab == tabName)
         for _, container in ipairs(containers) do
-            if visible then
-                container.Visible = true
-                container.Size = UDim2.new(0.95, 0, 0, 70)
-                container.BackgroundTransparency = 0
-            else
-                container.Visible = false
-            end
+            container.Visible = visible
         end
     end
 end
 
 -- Conectar abas
-TabMain.MouseButton1Click:Connect(function() showTab("Main") end)
-TabFarm.MouseButton1Click:Connect(function() showTab("Farm") end)
-TabBuy.MouseButton1Click:Connect(function() showTab("Buy") end)
-TabSpeed.MouseButton1Click:Connect(function() showTab("Speed") end)
+TabMain.MouseButton1Click:Connect(function() showTab("PRINCIPAL") end)
+TabFarm.MouseButton1Click:Connect(function() showTab("FARM") end)
+TabBuy.MouseButton1Click:Connect(function() showTab("COMPRAS") end)
+TabSpeed.MouseButton1Click:Connect(function() showTab("VELOCIDADE") end)
 
--- Dragging do botão flutuante
+-- Dragging do botão
 local dragging, dragStart, startPos
 FloatingButton.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -528,30 +509,20 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
--- Animações de abrir/fechar
+-- Função para abrir/fechar (CORRIGIDA)
 local function toggleMenu()
-    if MainFrame.Visible then
-        -- Fechar
-        TweenService:Create(MainFrame, TweenInfo.new(0.2), {
-            Size = UDim2.new(0, 600, 0, 0)
-        }):Play()
-        task.wait(0.2)
-        MainFrame.Visible = false
-    else
-        -- Abrir
-        MainFrame.Visible = true
-        MainFrame.Size = UDim2.new(0, 600, 0, 0)
-        TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            Size = UDim2.new(0, 600, 0, 550)
-        }):Play()
-    end
+    MainFrame.Visible = not MainFrame.Visible
 end
 
 -- Botão flutuante
 FloatingButton.MouseButton1Click:Connect(toggleMenu)
-CloseBtn.MouseButton1Click:Connect(toggleMenu)
 
--- Tecla L
+-- Botão fechar
+CloseBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+end)
+
+-- TECLA L (CORRIGIDA)
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if not gameProcessed and input.KeyCode == Enum.KeyCode.L then
         toggleMenu()
@@ -564,11 +535,6 @@ local pulseTween = TweenService:Create(Glow, TweenInfo.new(2, Enum.EasingStyle.S
 })
 pulseTween:Play()
 
--- === FUNÇÕES DO SCRIPT (mantidas iguais) ===
--- [Cole aqui todas as funções do script anterior:
--- Anti Ragdoll, Instant Collect, Low Mode, Auto Buy Brainrot, 
--- Velocidade, Auto Farm com compra automática, Auto Buy Ingredientes]
-
-print("✅ Snowy Hub V3 - Design Premium carregado!")
+print("✅ Snowy Hub V3 carregado!")
 print("📌 Pressione L para abrir/fechar")
-print("🎨 Design moderno com animações otimizadas")
+print("🎨 Design elegante com letra S")
