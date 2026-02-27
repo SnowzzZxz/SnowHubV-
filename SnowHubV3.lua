@@ -74,7 +74,7 @@ TopCorner.Parent = TopBar
 local ScriptTitle = Instance.new("TextLabel")
 ScriptTitle.Size = UDim2.new(0, 150, 1, 0)
 ScriptTitle.Position = UDim2.new(0, 10, 0, 0)
-ScriptTitle.Text = "Snowy Hub V2"
+ScriptTitle.Text = "Snowy Hub V3"
 ScriptTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 ScriptTitle.Font = Enum.Font.SourceSansBold
 ScriptTitle.TextSize = 22
@@ -431,7 +431,7 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- 6. AUTO FARM (Todas as raridades)
+-- 6. AUTO FARM (Todas as raridades) com COMPRA AUTOMÁTICA
 local brainrotsFolder = workspace:WaitForChild("Client", 10):WaitForChild("Path", 5):WaitForChild("Brainrots", 5)
 local targetHead = nil
 local isHidden = false
@@ -462,6 +462,38 @@ local function setVisibility(visible)
     isHidden = not visible
 end
 
+-- Função para comprar o pet automaticamente (spamar E)
+local function autoBuyPet()
+    local char = Player.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return false end
+    
+    -- Procura por ProximityPrompt perto do player
+    for _, prompt in pairs(workspace:GetDescendants()) do
+        if prompt:IsA("ProximityPrompt") and prompt.Enabled then
+            local part = prompt.Parent
+            if part and part:IsA("BasePart") then
+                local distance = (char.HumanoidRootPart.Position - part.Position).Magnitude
+                -- Se estiver perto do prompt (distância de ativação)
+                if distance <= prompt.MaxActivationDistance then
+                    -- Ativa o prompt (compra o pet)
+                    fireproximityprompt(prompt)
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+
+-- Spam de compra mais rápido (10x por segundo)
+task.spawn(function()
+    while task.wait(0.1) do
+        if targetHead then -- Se tem um alvo
+            pcall(autoBuyPet)
+        end
+    end
+end)
+
 RunService.Heartbeat:Connect(function()
     -- Verifica quais raridades estão ativas
     local activeRarities = {}
@@ -484,12 +516,20 @@ RunService.Heartbeat:Connect(function()
     local root = char and char:FindFirstChild("HumanoidRootPart")
     if not root then return end
 
+    -- Se já tem um alvo e ele ainda existe
     if targetHead and targetHead.Parent and targetHead.Parent.Parent == brainrotsFolder then
-        root.CFrame = targetHead.CFrame
+        -- Fica perto do pet para comprar
+        root.CFrame = targetHead.CFrame * CFrame.new(0, 0, -3)
+        
         if not isHidden then setVisibility(false) end
+        
+        -- Tenta comprar a cada frame também
+        pcall(autoBuyPet)
+        
         return
     end
 
+    -- Procura novo alvo
     targetHead = nil
     if isHidden then setVisibility(true) end
 
@@ -518,7 +558,7 @@ RunService.Heartbeat:Connect(function()
                     
                     if isTarget then
                         targetHead = head
-                        root.CFrame = head.CFrame
+                        root.CFrame = head.CFrame * CFrame.new(0, 0, -3) -- Teleporta e já posiciona para comprar
                         break
                     end
                 end
@@ -557,8 +597,8 @@ task.spawn(function()
     end
 end)
 
-print("✅ Snowy Hub V2 carregado!")
+print("✅ Snowy Hub V3 carregado!")
 print("📌 Pressione L para abrir/fechar")
 print("📌 Abas: Main | Farm | Buy | Speed")
 print("📌 Main: Anti Ragdoll, Instant Collect, Low Mode, Auto Buy Brainrot")
-print("📌 Farm: Common até Stellar (8 raridades)")
+print("📌 Farm: Common até Stellar (8 raridades) - com COMPRA AUTOMÁTICA")
