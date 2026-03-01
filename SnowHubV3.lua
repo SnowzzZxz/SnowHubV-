@@ -259,17 +259,12 @@ local function createSpeedSlider(name, posIdx, tab)
     return function() return speed end
 end
 
--- Opções da Main
+-- Opções da Main (sem TP Tool)
 local isGodRagdoll = createOption("Anti Ragdoll", 0, true, "Main")
 local isInstantCollect = createOption("Instant Collect", 1, true, "Main")
 local isLowMode = createOption("Low Mode", 2, false, "Main")
 local isAutoBuyBrainrot = createOption("Auto Buy Brainrot", 3, false, "Main")
-
--- NOVO: Opção para TP Tool
-local isTPTool = createOption("TP Tool", 4, false, "Main")
-
--- NOVO: Opção para Auto Collect
-local isAutoCollect = createOption("Auto Collect (Base)", 5, false, "Main")
+local isAutoCollect = createOption("Auto Collect (Base)", 4, false, "Main") -- SÓ ISSO
 
 -- Opções do Farm
 local isAutoCommon = createOption("Auto Common", 0, false, "Farm")
@@ -340,53 +335,14 @@ end)
 FloatingButton.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
 
 -- ==========================================
--- NOVAS FUNÇÕES (TP TOOL e AUTO COLLECT)
+-- NOVA FUNÇÃO (AUTO COLLECT)
 -- ==========================================
 
--- Variáveis para as novas funções
-local tpToolItem = nil
 local autoCollectRunning = false
 local autoCollectThread = nil
 
--- FUNÇÃO: TP TOOL
-local function toggleTPTool(active)
-    if active then
-        -- Remove se já existir
-        local old = Player.Backpack:FindFirstChild("TPTool")
-        if old then old:Destroy() end
-        
-        local tool = Instance.new("Tool")
-        tool.Name = "TPTool"
-        tool.RequiresHandle = false
-        tool.Parent = Player.Backpack
-        tool.TextureId = "rbxassetid://4483345998" -- Ícone de estrela
-        
-        tool.Activated:Connect(function()
-            local mouse = Player:GetMouse()
-            if mouse and mouse.Hit and Player.Character then
-                local hrp = Player.Character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    hrp.CFrame = mouse.Hit + Vector3.new(0, 3, 0)
-                end
-            end
-        end)
-        
-        tpToolItem = tool
-    else
-        if tpToolItem and tpToolItem.Parent then
-            tpToolItem:Destroy()
-        end
-        local backpackTool = Player.Backpack:FindFirstChild("TPTool")
-        if backpackTool then backpackTool:Destroy() end
-        local charTool = Player.Character and Player.Character:FindFirstChild("TPTool")
-        if charTool then charTool:Destroy() end
-        tpToolItem = nil
-    end
-end
-
--- FUNÇÃO: AUTO COLLECT (Pegar dinheiro da base)
+-- Função para encontrar a base do player
 local function findPlayerBase()
-    -- Procura pela base do jogador
     local server = workspace:FindFirstChild("Server")
     if not server then return nil end
     
@@ -405,6 +361,7 @@ local function findPlayerBase()
     return nil
 end
 
+-- Função principal do Auto Collect
 local function startAutoCollect()
     if autoCollectThread then return end
     
@@ -452,17 +409,9 @@ local function startAutoCollect()
     end)
 end
 
--- Monitoramento das novas funções
+-- Monitoramento do Auto Collect
 task.spawn(function()
     while task.wait(0.5) do
-        -- TP Tool
-        if isTPTool() then
-            toggleTPTool(true)
-        else
-            toggleTPTool(false)
-        end
-        
-        -- Auto Collect
         if isAutoCollect() and not autoCollectRunning then
             autoCollectRunning = true
             startAutoCollect()
@@ -722,4 +671,4 @@ end)
 
 print("✅ Snowy Hub V3 carregado!")
 print("📌 Pressione L para abrir/fechar")
-print("📌 NOVAS: TP Tool e Auto Collect (Base)")
+print("📌 NOVO: Auto Collect (Base)")
